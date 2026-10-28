@@ -7,7 +7,7 @@
 
 """
 
-from typing import Tuple, Iterator
+from typing import  Iterator
 
 import numpy as np
 
@@ -19,18 +19,18 @@ class Command:
 
         Attributs
         ------------------------------------------------------------------------------------------
-        control_upper Tuple[float, float] : bornes supérieures de U de la forme (ū₁ , ū₂)
-        control_lower Tuple[float, float] : bornes inférieures de U de la forme (u̲₁ , u̲₂)
+        control_upper np.ndarray[float] : bornes supérieures de U de la forme (ū₁ , ū₂)
+        control_lower np.ndarray[float]: bornes inférieures de U de la forme (u̲₁ , u̲₂)
         nb_commands (int)   : nombre de commandes symboliques 
-        size Tuple[float, float] : taille d'un sous-intervalles de U = (ū - u̲) / nb_commands
+        size np.ndarray[float] : taille d'un sous-intervalles de U = (ū - u̲) / nb_commands
         ------------------------------------------------------------------------------------------
         =>l’indexation des commandes symboliques commence à 0 dans chaque dimension
         
     """
 
     def __init__(self, 
-                 control_upper :Tuple[float, float], 
-                 control_lower :Tuple[float, float] , 
+                 control_upper :np.ndarray[float], 
+                 control_lower :np.ndarray[float] , 
                  nb_commands : int) -> None:
 
         pass
@@ -74,14 +74,14 @@ class Command:
         """
         pass
 
-    def to_multi(self, sigma: int) -> Tuple[int]:
+    def to_multi(self, sigma: int) -> np.ndarray[int]:
         """
             Identifiant plat -> indice multidimensionnel
 
         """
         pass
 
-    def to_flat(self, multi: Tuple[int]) -> int :
+    def to_flat(self, multi: np.ndarray[int]) -> int :
         """
             Indice multidimensionnel -> identifiant plat 
 

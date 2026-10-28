@@ -10,7 +10,7 @@
 
 """
 
-from typing import Optional, Iterator, List, Tuple
+from typing import Optional, Iterator
 
 import numpy as np
 
@@ -21,11 +21,11 @@ class Grid :
 
       Attributs publics :
       -------------------------------------------------------------------------------------------
-      lower_x : List[float]   bornes inférieures de X
-      upper_x : List[float]   bornes supérieures de X
-      shape : List[int]   nombre d'état symbolique par dimension (N_xi)
-      periodic : List[bool] dimensions périodiques (ex : angle x3 modulo 2π)
-      eta : List[float] (n,)     taille d'une cellule = (upper_x - lower_x) / shape 
+      lower_x : np.ndarray[float]   bornes inférieures de X
+      upper_x : np.ndarray[float]   bornes supérieures de X
+      shape : np.ndarray[int]   nombre d'état symbolique par dimension (N_xi)
+      periodic : np.ndarray[bool] dimensions périodiques (ex : angle x3 modulo 2π)
+      eta : np.ndarray[float] (n,)     taille d'une cellule = (upper_x - lower_x) / shape 
       n_states : int         nombre total d'états symboliques' = prod(shape) = N_x1 * N_x2 * N_x3 
       -------------------------------------------------------------------------------------------
       =>l’indexation des cellules commence à 0 dans chaque dimension
@@ -34,10 +34,10 @@ class Grid :
 
     def __init__(
                     self,
-                    lower_x: List[float], 
-                    upper_x: List[float], 
-                    shape: List[int],  
-                    periodic: Optional[List[bool]] = None ) -> None:
+                    lower_x: np.ndarray[float], 
+                    upper_x: np.ndarray[float], 
+                    shape: np.ndarray[int],  
+                    periodic: Optional[np.ndarray[bool]] = None ) -> None:
 
             """
                 Construit la grille et calcule eta et n_states une seule fois.
@@ -52,6 +52,7 @@ class Grid :
             """
         
             pass
+            
 
 
     def q_grid(self, x:np.ndarray[float]) -> int:
@@ -116,7 +117,7 @@ class Grid :
 
 
 
-    def cells_intersect(self, low: List[float], high: List[float]) -> np.ndarray[int]:
+    def cells_intersect(self, low: np.ndarray[float], high: np.ndarray[float]) -> np.ndarray[int]:
           """
             Identifiants de toutes les cellules dont l'intersection avec la boîte [low, high]
             est non vide .
@@ -138,7 +139,7 @@ class Grid :
           pass
 
 
-    def cells_inside(self, lo: List[float], hi:List[float]) -> np.ndarray[int]:
+    def cells_inside(self, lo: np.ndarray[float], hi:np.ndarray[float]) -> np.ndarray[int]:
           """
             Identifiants des cellules entièrement contenues dans [lo, hi].
 
