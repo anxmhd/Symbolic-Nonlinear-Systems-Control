@@ -34,10 +34,10 @@ class Grid :
 
     def __init__(
                     self,
-                    lower_x: np.ndarray[float], 
-                    upper_x: np.ndarray[float], 
-                    shape: np.ndarray[int],  
-                    periodic: Optional[np.ndarray[bool]] = None ) -> None:
+                    lower_x: np.ndarray, 
+                    upper_x: np.ndarray, 
+                    shape: np.ndarray,  
+                    periodic: Optional[np.ndarray] = None ) -> None:
 
             """
                 Construit la grille et calcule eta et n_states une seule fois.
@@ -50,8 +50,59 @@ class Grid :
                 -----------------------------------------------------------------------------
 
             """
-        
-            pass
+
+            lower_x = np.asarray(lower_x, dtype=float)
+            upper_x = np.asarray(upper_x, dtype=float)
+            shape = np.asarray(shape)
+
+
+            # Verification des dimension
+            if lower_x.ndim != 1 or upper_x.ndim != 1 or shape.ndim != 1:
+                raise ValueError("Grid parameters must be 1D arrays.")
+
+            if not (lower_x.shape == upper_x.shape == shape.shape):
+                raise ValueError("lower_x, upper_x and shape must have the same dimensions.")
+
+
+            # Verification des bornes
+            if not np.all(np.isfinite(lower_x)) or not np.all(np.isfinite(upper_x)):
+                raise ValueError("Bounds must contain only finite values.")
+
+            if np.any(upper_x <= lower_x):
+                raise ValueError("upper_x must be greater than lower_x in every dimension.")
+
+
+            # Vérification de la forme avant de la convertir en entiers
+            if not np.issubdtype(shape.dtype, np.integer):
+                raise TypeError("shape must contain integers.")
+
+            if np.any(shape <= 0):
+                raise ValueError("Every dimension in shape must be positive.")
+
+
+            #  Verification de `periodic`
+            if periodic is None:
+                periodic = np.zeros(shape.size, dtype=bool)
+            else:
+                periodic = np.asarray(periodic)
+
+                if periodic.shape != shape.shape:
+                    raise ValueError("periodic must have the same dimensions as shape.")
+
+                if not np.issubdtype(periodic.dtype, np.bool_):
+                    raise TypeError("periodic must contain Boolean values.")
+
+
+            # Stocker les attributs validés
+            self.lower_x = lower_x
+            self.upper_x = upper_x
+            self.shape = shape
+            self.periodic = periodic
+
+            self.eta = (upper_x - lower_x) / shape
+            self.n_states = int(np.prod(shape))
+                    
+
             
 
 
@@ -169,13 +220,34 @@ class Grid :
 
           """
           pass
+               
 
     def to_flat(self, multi: np.ndarray[int]) -> int :
           """
             Indice multidimensionnel -> identifiant plat 
 
           """
-          pass
+
+          # input could be a list or a numpy array
+          multi = np.asarray(multi)
+
+          # Verifying the dimension of the input 
+          if multi.ndim !=1  :
+              raise ValueError("The input be a 1D array")
+          
+          if not(multi.shape == self.shape.shape)  :
+              raise ValueError("The input should have the same dimension as shape")
+
+          xi+= multi[-1]
+          l = len(self.shape)
+
+          if l>=2:
+            for i in range(l-2, 0,-1):
+                xi+= multi[i]*self.shape[i+1:]
+               
+          return xi      
+              
+               
     
 
     def iter_all_symbolic_states(self, batch_size: int = 100_000) -> Iterator[np.ndarray[int]]:
